@@ -136,8 +136,7 @@ public class Dimensions {
 				for (int i = 0; i < 2; i++) {
 					int nextV = next[i][x];
 					int prevV = prev[i][x];
-					if ((nextV == -1 && (x == length - 1 || rw[i][x] > rw[i][x + 1]))
-							|| (prevV == -1 && (x == 0 || rw[i][x] > rw[i][x - 1]))) {
+					if ((nextV == -1 && (x == length - 1 || rw[i][x] > rw[i][x + 1])) || (prevV == -1 && (x == 0 || rw[i][x] > rw[i][x - 1]))) {
 						avDistance += cdist;
 						break outer;
 					}
@@ -173,6 +172,10 @@ public class Dimensions {
 		int[][] rw = new int[2][length];
 		int[] queueX = new int[4 * length];
 		int[] queueW = new int[4 * length];
+		boolean[] edir = new boolean[length];
+		for (int i = 0; i < edir.length; i++) {
+			edir[i] = Main.rnd.nextBoolean();
+		}
 		int[][] dist = new int[2][length + 1];
 		int[][] next = new int[2][length];
 		int[][] prev = new int[2][length];
@@ -182,8 +185,8 @@ public class Dimensions {
 				Main.buildRW(rw[i]);
 				// rw[i] = new int[] { 1, 0, -1, 0, -1, 0, -1, -2, -1 };
 				buildNextPrev(rw[i], next[i], prev[i]);
-				Arrays.fill(dist[i], Integer.MAX_VALUE);
-				dist[i][length] = Integer.MIN_VALUE;
+				Arrays.fill(dist[i], Short.MAX_VALUE);
+				dist[i][length] = Short.MIN_VALUE;
 			}
 			int start = length / 2, startW = 0, L = 2 * length, R = 2 * length;
 			queueX[R] = start;
@@ -196,8 +199,7 @@ public class Dimensions {
 				L++;
 				int nextV = next[w][x];
 				int prevV = prev[w][x];
-				if ((nextV == -1 && (x == length - 1 || rw[w][x] > rw[w][x + 1]))
-						|| (prevV == -1 && (x == 0 || rw[w][x] > rw[w][x - 1]))) {
+				if ((nextV == -1 && (x == length - 1 || rw[w][x] > rw[w][x + 1])) || (prevV == -1 && (x == 0 || rw[w][x] > rw[w][x - 1]))) {
 					avDistance += cdist;
 					reachedBoundary = true;
 					break;
@@ -207,28 +209,31 @@ public class Dimensions {
 					queueW[(L--) - 1] = w;
 					dist[w][nextV] = cdist;
 				}
-				if (prevV != -1 && cdist < dist[w][prevV]) {
-					queueX[L - 1] = prevV;
-					queueW[(L--) - 1] = w;
-					dist[w][prevV] = cdist;
-				}
-				// if (cdist + 1 < dist[w][x + 1] && rw[w][x + 1] < rw[w][x]) {
+				// backward jumps
+				// if (prevV != -1 && cdist < dist[w][prevV]) {
+				// queueX[L - 1] = prevV;
+				// queueW[(L--) - 1] = w;
+				// dist[w][prevV] = cdist;
+				// }
+
+				// // can add these conditions, the answer shouldn't change! (not proved, but can be)
+				// if (cdist + 1 < dist[w][x + 1]/* && rw[w][x + 1] < rw[w][x] */) {
 				// queueX[R] = x + 1;
 				// queueW[R++] = w;
 				// dist[w][x + 1] = cdist + 1;
 				// }
-				// if (x > 0 && cdist + 1 < dist[w][x - 1] && rw[w][x - 1] >
-				// rw[w][x]) {
+				// if (x > 0 && cdist + 1 < dist[w][x - 1]/* && rw[w][x - 1] > rw[w][x] */) {
 				// queueX[R] = x - 1;
 				// queueW[R++] = w;
 				// dist[w][x - 1] = cdist + 1;
 				// }
-				if (w == 0 && cdist + 1 < dist[1 - w][x + 1]) {
+				boolean walk = (w == 0);
+				if ((walk ^ edir[x]) && cdist + 1 < dist[1 - w][x + 1]) {
 					queueX[R] = x + 1;
 					queueW[R++] = 1 - w;
 					dist[1 - w][x + 1] = cdist + 1;
 				}
-				if (w == 1 && cdist + 1 < dist[1 - w][x - 1]) {
+				if ((!walk ^ edir[x - 1]) && cdist + 1 < dist[1 - w][x - 1]) {
 					queueX[R] = x - 1;
 					queueW[R++] = 1 - w;
 					dist[1 - w][x - 1] = cdist + 1;

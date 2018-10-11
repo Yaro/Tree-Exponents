@@ -1,18 +1,17 @@
 package TreeLib;
 
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
 public class Main {
 
-	static Random rnd = new Random(0);
+	static Random rnd = new Random();
 
-	public static void buildRW(int[] a) {
-		a[0] = 0;
-		for (int i = 1; i < a.length; i++) {
-			a[i] = a[i - 1] + (rnd.nextBoolean() ? 1 : -1);
+	public static void buildRW(int[] rw) {
+		rw[0] = 0;
+		for (int i = 1; i < rw.length; i++) {
+			rw[i] = rw[i - 1] + (rnd.nextBoolean() ? 1 : -1);
 		}
 	}
 
@@ -161,95 +160,95 @@ public class Main {
 		return ret;
 	}
 
-	public static void testGap(int x) throws Exception {
-		int[] rw1 = new int[x + 1];
-		int[] rw2 = new int[x + 1];
-		double avGap = 0;
-		int ITER = 10000;
-		ArrayList<Integer> gaps = new ArrayList<>();
-		for (int it = 0; it < ITER; it++) {
-			buildRW(rw1);
-			buildRW(rw2);
-			// int gp1 = findMiddleGap(rw1, 0, x)[0];
-			// int gp2 = findMiddleGap(rw2, 0, x)[0];
-			// int gp1 = findLongestGap(rw1, 0, x)[0];
-			int gp1 = findLongestGapUpDown(rw1, 0, x, 1)[0];
-			int gp2 = findLongestGapUpDown(rw2, 0, x, -1)[0];
-			// debug(gp1);
-			// avGap += gp1;
-			avGap += Math.max(gp1, gp2);
-			gaps.add(gp1);
-			gaps.add(gp2);
-		}
-		avGap /= ITER;
-		debug(avGap);
-		PrintWriter out = new PrintWriter("gaps");
-		for (int v : gaps) {
-			out.print(v + " ");
-		}
-		out.close();
-	}
+	// public static void testGap(int x) throws Exception {
+	// int[] rw1 = new int[x + 1];
+	// int[] rw2 = new int[x + 1];
+	// double avGap = 0;
+	// int ITER = 10000;
+	// ArrayList<Integer> gaps = new ArrayList<>();
+	// for (int it = 0; it < ITER; it++) {
+	// buildRW(rw1);
+	// buildRW(rw2);
+	// // int gp1 = findMiddleGap(rw1, 0, x)[0];
+	// // int gp2 = findMiddleGap(rw2, 0, x)[0];
+	// // int gp1 = findLongestGap(rw1, 0, x)[0];
+	// int gp1 = findLongestGapUpDown(rw1, 0, x, 1)[0];
+	// int gp2 = findLongestGapUpDown(rw2, 0, x, -1)[0];
+	// // debug(gp1);
+	// // avGap += gp1;
+	// avGap += Math.max(gp1, gp2);
+	// gaps.add(gp1);
+	// gaps.add(gp2);
+	// }
+	// avGap /= ITER;
+	// debug(avGap);
+	// PrintWriter out = new PrintWriter("gaps");
+	// for (int v : gaps) {
+	// out.print(v + " ");
+	// }
+	// out.close();
+	// }
 
-	public static void testGapExponent(int x) {
-		int[] rw1 = new int[x + 1];
-		int[] rw2 = new int[x + 1];
-		int ITER = 10000;
-		int[] len = new int[2 * ITER];
-		for (int it = 0; it < ITER; it++) {
-			buildRW(rw1);
-			buildRW(rw2);
+	// public static void testGapExponent(int x) {
+	// int[] rw1 = new int[x + 1];
+	// int[] rw2 = new int[x + 1];
+	// int ITER = 10000;
+	// int[] len = new int[2 * ITER];
+	// for (int it = 0; it < ITER; it++) {
+	// buildRW(rw1);
+	// buildRW(rw2);
+	//
+	// int[] gp1 = findLongestGap(rw1, 0, x);
+	// len[2 * it] = gp1[1];
+	// len[2 * it + 1] = x - gp1[2];
+	//
+	// // int[] gp1 = findLongestGapUpDown(rw1, 0, x, 1);
+	// // int[] gp2 = findLongestGapUpDown(rw2, 0, x, 1);
+	//
+	// // int[] gp1 = findLongestGap(rw1, 0, x);
+	// // int[] gp2 = findLongestGap(rw2, 0, x);
+	// // if (gp1[0] > gp2[0]) {
+	// // len[2 * it] = gp1[1];
+	// // len[2 * it + 1] = x - gp1[2];
+	// // } else {
+	// // len[2 * it] = gp2[1];
+	// // len[2 * it + 1] = x - gp2[2];
+	// // }
+	// }
+	// double aL = 0, aR = 1;
+	// for (int it = 0; it < 50; it++) {
+	// double aM = (aL + aR) / 2;
+	// double ex = Math.pow(x, aM);
+	// double ex12 = 0;
+	// for (int xi : len) {
+	// ex12 += Math.pow(xi, aM);
+	// }
+	// ex12 /= ITER;
+	// if (ex < ex12)
+	// aL = aM;
+	// else
+	// aR = aM;
+	// }
+	// debug(aL);
+	// }
 
-			int[] gp1 = findLongestGap(rw1, 0, x);
-			len[2 * it] = gp1[1];
-			len[2 * it + 1] = x - gp1[2];
-
-			// int[] gp1 = findLongestGapUpDown(rw1, 0, x, 1);
-			// int[] gp2 = findLongestGapUpDown(rw2, 0, x, 1);
-
-			// int[] gp1 = findLongestGap(rw1, 0, x);
-			// int[] gp2 = findLongestGap(rw2, 0, x);
-			// if (gp1[0] > gp2[0]) {
-			// len[2 * it] = gp1[1];
-			// len[2 * it + 1] = x - gp1[2];
-			// } else {
-			// len[2 * it] = gp2[1];
-			// len[2 * it + 1] = x - gp2[2];
-			// }
-		}
-		double aL = 0, aR = 1;
-		for (int it = 0; it < 50; it++) {
-			double aM = (aL + aR) / 2;
-			double ex = Math.pow(x, aM);
-			double ex12 = 0;
-			for (int xi : len) {
-				ex12 += Math.pow(xi, aM);
-			}
-			ex12 /= ITER;
-			if (ex < ex12)
-				aL = aM;
-			else
-				aR = aM;
-		}
-		debug(aL);
-	}
-
-	public static void testFromAbove(int x) {
-		int[] rw1 = new int[x + 1];
-		int[] rw2 = new int[x + 1];
-		double avJumps = 0;
-		int ITER = 100;
-		for (int it = 0; it < ITER; it++) {
-			buildRW(rw1);
-			buildRW(rw2);
-			int j = fromAboveDynamics(rw1, rw2);
-			debug(j);
-			if (it % 10 == 0)
-				debug(it / 1000, avJumps / (it + 1));
-			avJumps += j;
-		}
-		avJumps /= ITER;
-		debug(String.format("{%d, %.4f}", x, avJumps));
-	}
+	// public static void testFromAbove(int x) {
+	// int[] rw1 = new int[x + 1];
+	// int[] rw2 = new int[x + 1];
+	// double avJumps = 0;
+	// int ITER = 100;
+	// for (int it = 0; it < ITER; it++) {
+	// buildRW(rw1);
+	// buildRW(rw2);
+	// int j = fromAboveDynamics(rw1, rw2);
+	// debug(j);
+	// if (it % 10 == 0)
+	// debug(it / 1000, avJumps / (it + 1));
+	// avJumps += j;
+	// }
+	// avJumps /= ITER;
+	// debug(String.format("{%d, %.4f}", x, avJumps));
+	// }
 
 	public static int[] buildAboveJumps(int[] a) {
 		ArrayList<Integer> pts = new ArrayList<>();
@@ -367,19 +366,29 @@ public class Main {
 		// testFromAbove(v);
 		// }
 
-		int ITER = 10000;
+		int ITER = 5000;
 		// int[] radii = new int[] { 20, 35, 60, 90, 120, 160, 200, 250 };
 		// for (int r : radii) {
 		// Dimensions.calculateDimension(ITER, r);
 		// }
 
-		ArrayList<Integer> lens = new ArrayList<>();
-		for (int i = 20000; i <= 1000000; i = (int) Math.round(i * 1.5)) {
-			lens.add(i);
-		}
-		for (int len : lens) {
-			Dimensions.calculateGraphDimensionViaBoundary(ITER, len);
-			System.out.println();
+		// ArrayList<Integer> lens = new ArrayList<>();
+		// for (int i = 20000; i <= 1000000; i = (int) Math.round(i * 1.5)) {
+		// lens.add(i);
+		// }
+		// for (int len : lens) {
+		// Dimensions.calculateGraphDimensionViaBoundary(ITER, len);
+		// System.out.println();
+		// }
+
+		double sumD1 = 0, sumD2 = 0;
+		for (int i1 = 0, i2 = 100; i1 < 1000; i1++) {
+			debug("Iterations: ", i1 * i2);
+			sumD1 += Dimensions.calculateGraphDimensionViaBoundary(i2, 1000000);
+			sumD2 += Dimensions.calculateGraphDimensionViaBoundary(i2, 2000000);
+			double d1 = sumD1 / (i1 + 1);
+			double d2 = sumD2 / (i1 + 1);
+			debug("\n" + Math.log(2) / Math.log(d2 / d1));
 		}
 
 		// double d1 = Dimensions.calculateDimensionViaBoundary(10000, 2000000);
@@ -404,7 +413,6 @@ public class Main {
 	}
 
 	static void printMemory() {
-		System.err.println("Memory consumed: "
-				+ (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000 + "kb");
+		System.err.println("Memory consumed: " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000 + "kb");
 	}
 }
