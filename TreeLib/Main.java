@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class Main {
 
-	static Random rnd = new Random();
+	static Random rnd = new Random(0);
 
 	public static void buildRW(int[] a) {
 		a[0] = 0;
@@ -367,14 +367,14 @@ public class Main {
 		// testFromAbove(v);
 		// }
 
-		int ITER = 1000;
+		int ITER = 10000;
 		// int[] radii = new int[] { 20, 35, 60, 90, 120, 160, 200, 250 };
 		// for (int r : radii) {
 		// Dimensions.calculateDimension(ITER, r);
 		// }
 
 		ArrayList<Integer> lens = new ArrayList<>();
-		for (int i = 20000; i <= 2000000; i = (int) Math.round(i * 1.5)) {
+		for (int i = 20000; i <= 1000000; i = (int) Math.round(i * 1.5)) {
 			lens.add(i);
 		}
 		for (int len : lens) {

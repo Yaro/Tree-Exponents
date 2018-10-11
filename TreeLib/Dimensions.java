@@ -169,6 +169,7 @@ public class Dimensions {
 	}
 
 	public static double calculateGraphDimensionViaBoundary(int iterations, int length) {
+		// length = 9;
 		int[][] rw = new int[2][length];
 		int[] queueX = new int[4 * length];
 		int[] queueW = new int[4 * length];
@@ -179,6 +180,7 @@ public class Dimensions {
 		for (int it = 0; it < iterations; it++) {
 			for (int i = 0; i < 2; i++) {
 				Main.buildRW(rw[i]);
+				// rw[i] = new int[] { 1, 0, -1, 0, -1, 0, -1, -2, -1 };
 				buildNextPrev(rw[i], next[i], prev[i]);
 				Arrays.fill(dist[i], Integer.MAX_VALUE);
 				dist[i][length] = Integer.MIN_VALUE;
@@ -187,14 +189,17 @@ public class Dimensions {
 			queueX[R] = start;
 			queueW[R++] = startW;
 			dist[startW][start] = 0;
+			boolean reachedBoundary = false;
 			while (L < R) {
 				int x = queueX[L], w = queueW[L], cdist = dist[w][x];
+				// Main.debug(x, w, cdist);
 				L++;
 				int nextV = next[w][x];
 				int prevV = prev[w][x];
 				if ((nextV == -1 && (x == length - 1 || rw[w][x] > rw[w][x + 1]))
 						|| (prevV == -1 && (x == 0 || rw[w][x] > rw[w][x - 1]))) {
 					avDistance += cdist;
+					reachedBoundary = true;
 					break;
 				}
 				if (nextV != -1 && cdist < dist[w][nextV]) {
@@ -207,15 +212,26 @@ public class Dimensions {
 					queueW[(L--) - 1] = w;
 					dist[w][prevV] = cdist;
 				}
-				if (cdist + 1 < dist[w][x + 1]) {
+				// if (cdist + 1 < dist[w][x + 1] && rw[w][x + 1] < rw[w][x]) {
+				// queueX[R] = x + 1;
+				// queueW[R++] = w;
+				// dist[w][x + 1] = cdist + 1;
+				// }
+				// if (x > 0 && cdist + 1 < dist[w][x - 1] && rw[w][x - 1] >
+				// rw[w][x]) {
+				// queueX[R] = x - 1;
+				// queueW[R++] = w;
+				// dist[w][x - 1] = cdist + 1;
+				// }
+				if (w == 0 && cdist + 1 < dist[1 - w][x + 1]) {
 					queueX[R] = x + 1;
-					queueW[R++] = w;
-					dist[w][x + 1] = cdist + 1;
+					queueW[R++] = 1 - w;
+					dist[1 - w][x + 1] = cdist + 1;
 				}
-				if (x > 0 && cdist + 1 < dist[w][x - 1]) {
+				if (w == 1 && cdist + 1 < dist[1 - w][x - 1]) {
 					queueX[R] = x - 1;
-					queueW[R++] = w;
-					dist[w][x - 1] = cdist + 1;
+					queueW[R++] = 1 - w;
+					dist[1 - w][x - 1] = cdist + 1;
 				}
 				if (cdist + 1 < dist[1 - w][x]) {
 					queueX[R] = x;
@@ -223,6 +239,8 @@ public class Dimensions {
 					dist[1 - w][x] = cdist + 1;
 				}
 			}
+			if (!reachedBoundary)
+				throw new AssertionError();
 			// if (it > 0 && iterations > 20 && it % (iterations / 20) == 0) {
 			// Main.debug(it, avDistance / it);
 			// }
